@@ -25,7 +25,7 @@ Connection();
 // });
 
 //Server port setup
-const BACKEND_PORT = process.env.BACKEND_PORT || 8000;
+const BACKEND_PORT = process.env.PORT || 8000;
 
 app.listen(BACKEND_PORT, () => {
   console.log(`server started on port ${BACKEND_PORT}`);
