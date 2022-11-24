@@ -30,6 +30,7 @@ exports.sendOtp = catchAsync(async (req, res, next) => {
 });
 
 exports.verifyOtp = catchAsync(async (req, res, next) => {
+  console.log(req.body);
   if (req.body.otp != parseInt(req.body._id / 1000000)) {
     return next(new AppError("Incorrect Otp", 401));
   }
