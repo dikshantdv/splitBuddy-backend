@@ -33,7 +33,7 @@ exports.verifyOtp = catchAsync(async (req, res, next) => {
   if (req.body.otp != parseInt(req.body._id / 1000000)) {
     return next(new AppError("Incorrect Otp", 401));
   }
-  let user = await User.findById(req.body._id);
+  let user = await User.find({ number: req.body.number });
   if (user) {
     return res.status(201).json({
       status: "already exists",
@@ -54,7 +54,7 @@ exports.createUser = catchAsync(async (req, res, next) => {
   });
   res.status(201).json({
     status: "success",
-    user,
+    user: user,
   });
 });
 
@@ -114,5 +114,13 @@ exports.getFriends = catchAsync(async (req, res, next) => {
   res.status(201).json({
     status: "success",
     friendList,
+  });
+});
+
+exports.getFriendSearchResult = catchAsync(async (req, res, next) => {
+  const searchResult = await User.find({ number: /^9/ });
+  res.status(201).json({
+    status: "success",
+    searchResult,
   });
 });

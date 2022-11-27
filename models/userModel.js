@@ -3,7 +3,7 @@ const FriendList = require("./FriendListModel");
 
 const userSchema = new mongoose.Schema(
   {
-    _id: { type: Number },
+    number: { type: String },
     name: {
       type: String,
       required: [true, "A User must have a name"],

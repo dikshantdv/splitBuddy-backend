@@ -12,6 +12,9 @@ router.route("/addFriend").post(userController.AddFriend);
 router.route("/addAmount").post(transactionController.AddAmount);
 router.route("/addSplit").post(transactionController.AddSplit);
 router.route("/:friendsId/getFriends").get(userController.getFriends);
+router
+  .route("/:f/getFriendSearchResult")
+  .get(userController.getFriendSearchResult);
 router.route("/:id/getTransaction").get(transactionController.getTransaction);
 
 // router.route("/login").post(userController.loginUser);
