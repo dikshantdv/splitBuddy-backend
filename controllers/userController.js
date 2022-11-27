@@ -33,7 +33,8 @@ exports.verifyOtp = catchAsync(async (req, res, next) => {
   if (req.body.otp != parseInt(req.body.number / 1000000)) {
     return next(new AppError("Incorrect Otp", 401));
   }
-  let user = await User.find({ number: req.body.number });
+  let user = await User.findOne({ number: req.body.number });
+  console.log(user);
   if (user) {
     return res.status(201).json({
       status: "already exists",
