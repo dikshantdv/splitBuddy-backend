@@ -7,6 +7,7 @@ const router = express.Router();
 // router.route("/:carId").get(carController.getOneCar);
 router.route("/verifyOtp").post(userController.verifyOtp);
 router.route("/updateUser").post(userController.updateUser);
+router.route("/createUser").post(userController.createUser);
 router.route("/addFriend").post(userController.AddFriend);
 router.route("/addAmount").post(transactionController.AddAmount);
 router.route("/addSplit").post(transactionController.AddSplit);

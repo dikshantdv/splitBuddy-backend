@@ -30,7 +30,6 @@ exports.sendOtp = catchAsync(async (req, res, next) => {
 });
 
 exports.verifyOtp = catchAsync(async (req, res, next) => {
-  console.log(req.body);
   if (req.body.otp != parseInt(req.body._id / 1000000)) {
     return next(new AppError("Incorrect Otp", 401));
   }
@@ -41,14 +40,18 @@ exports.verifyOtp = catchAsync(async (req, res, next) => {
       user,
     });
   } else {
-    const friendList = await FriendList.create({});
-    user = await User.create({
-      _id: req.body._id,
-      name: req.body.name,
-      friendsId: friendList._id,
+    res.status(201).json({
+      status: "success",
     });
   }
-
+});
+exports.createUser = catchAsync(async (req, res, next) => {
+  const friendList = await FriendList.create({});
+  const user = await User.create({
+    _id: req.body._id,
+    name: req.body.name,
+    friendsId: friendList._id,
+  });
   res.status(201).json({
     status: "success",
     user,
