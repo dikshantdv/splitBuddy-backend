@@ -7,7 +7,7 @@ exports.addTransaction = catchAsync(async (req, res, next) => {
   let amount = await Transaction.create({
     creatorId: req.body._id,
     amount: req.body.amount,
-    between: [req.body._id, req.body._withId],
+    between: req.body.between,
     type: req.body.type,
   });
 
