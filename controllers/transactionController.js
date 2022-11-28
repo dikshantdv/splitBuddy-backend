@@ -25,7 +25,7 @@ exports.AddSplit = catchAsync(async (req, res, next) => {
     }
     await Transaction.create({
       creatorId: req.body.creator,
-      amount: req.body.amount,
+      amount: req.body.amount / req.body.between.length,
       between: [req.body.creator, req.body.between[i]],
       type: "gave",
       name: req.body.name,
