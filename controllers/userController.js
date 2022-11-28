@@ -33,7 +33,7 @@ exports.verifyOtp = catchAsync(async (req, res, next) => {
   if (req.body.otp != parseInt(+req.body._id / 1000000)) {
     return next(new AppError("Incorrect Otp", 401));
   }
-  let user = await User.findOne({ number: req.body.number });
+  let user = await User.findOne({ _id: req.body._id });
   console.log(user);
   if (user) {
     return res.status(201).json({
