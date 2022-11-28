@@ -49,7 +49,7 @@ exports.verifyOtp = catchAsync(async (req, res, next) => {
 exports.createUser = catchAsync(async (req, res, next) => {
   const friendList = await FriendList.create({});
   const user = await User.create({
-    _id: req.body._id,
+    number: req.body.number,
     name: req.body.name,
     friendsId: friendList._id,
   });
@@ -119,7 +119,8 @@ exports.getFriends = catchAsync(async (req, res, next) => {
 });
 
 exports.getFriendSearchResult = catchAsync(async (req, res, next) => {
-  const searchResult = await User.find({ number: /^9/ });
+  console.log(`/^${req.params.keyword}/`);
+  const searchResult = await User.find({ name: /^/ });
   res.status(201).json({
     status: "success",
     searchResult,

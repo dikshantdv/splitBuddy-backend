@@ -13,7 +13,7 @@ router.route("/addAmount").post(transactionController.AddAmount);
 router.route("/addSplit").post(transactionController.AddSplit);
 router.route("/:friendsId/getFriends").get(userController.getFriends);
 router
-  .route("/:f/getFriendSearchResult")
+  .route("/:keyword/getFriendSearchResult")
   .get(userController.getFriendSearchResult);
 router.route("/:id/getTransaction").get(transactionController.getTransaction);
 
