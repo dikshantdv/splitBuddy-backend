@@ -119,8 +119,9 @@ exports.getFriends = catchAsync(async (req, res, next) => {
 });
 
 exports.getFriendSearchResult = catchAsync(async (req, res, next) => {
-  console.log(`/^${req.params.keyword}/`);
-  const searchResult = await User.find({ name: /^/ });
+  const searchResult = await User.find({
+    number: { $regex: new RegExp(req.params.keyword) },
+  }).limit(10);
   res.status(201).json({
     status: "success",
     searchResult,
