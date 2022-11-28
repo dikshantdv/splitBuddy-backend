@@ -119,13 +119,11 @@ exports.getFriends = catchAsync(async (req, res, next) => {
 });
 
 exports.getFriendSearchResult = catchAsync(async (req, res, next) => {
-  // const friendList = await FriendList.findById(req.body.friendsId);
+  const friendList = await FriendList.findById(req.headers.friendsid);
   const searchResult = await User.find({
-    // number: { $regex: new RegExp("^" + req.params.keyword) },
     $and: [
       { _id: { $regex: new RegExp("^" + req.params.keyword) } },
-      { _id: { $nin: [req.body._id] } },
-      // { _id: { $nin: [req.body.number, ...friendList.friends] } },
+      { _id: { $nin: [req.headers._id, ...friendList.friends] } },
     ],
   }).limit(10);
   res.status(201).json({
