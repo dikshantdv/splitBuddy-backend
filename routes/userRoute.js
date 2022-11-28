@@ -9,13 +9,13 @@ router.route("/verifyOtp").post(userController.verifyOtp);
 router.route("/updateUser").post(userController.updateUser);
 router.route("/createUser").post(userController.createUser);
 router.route("/addFriend").post(userController.AddFriend);
-router.route("/addAmount").post(transactionController.AddAmount);
+router.route("/addTransaction").post(transactionController.addTransaction);
 router.route("/addSplit").post(transactionController.AddSplit);
 router.route("/:friendsId/getFriends").get(userController.getFriends);
 router
   .route("/:keyword/getFriendSearchResult")
   .get(userController.getFriendSearchResult);
-router.route("/:id/getTransaction").get(transactionController.getTransaction);
+router.route("/:id/getTransactions").get(transactionController.getTransactions);
 
 // router.route("/login").post(userController.loginUser);
 // router.route("/getUsers/:id").get(userController.getUsers);

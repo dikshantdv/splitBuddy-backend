@@ -2,7 +2,6 @@ const catchAsync = require("../utils/catchAsync");
 const User = require("../models/userModel");
 const AppError = require("../utils/appError");
 const FriendList = require("../models/FriendListModel");
-const Transaction = require("../models/TransactionModel");
 
 exports.sendOtp = catchAsync(async (req, res, next) => {
   // if (req.body.otp != 1234) {
@@ -96,10 +95,6 @@ exports.AddFriend = catchAsync(async (req, res, next) => {
     //   transacObj.type=req.body.type,
     //   transacObj.name=req.body.name,
     // }
-    const transaction = await Transaction.create({
-      creator: req.body._id,
-      between: [req.body._id, req.body.oppositeId],
-    });
   }
 
   res.status(201).json({

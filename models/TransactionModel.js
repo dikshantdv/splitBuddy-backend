@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 
 const transactionSchema = new mongoose.Schema(
   {
-    creator: {
-      type: String,
-      required: [true, "A Transaction must have creator"],
-      ref: "User",
+    amount: {
+      type: Number,
+      required: [true, "A Transaction must have a amount"],
+      trim: true,
     },
     between: [
       {
@@ -14,6 +14,19 @@ const transactionSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    creatorId: { type: String, ref: "User" },
+    type: {
+      type: String,
+      enum: ["gave", "got"],
+    },
+    transactionType: {
+      type: String,
+      default: "normal",
+    },
+    name: {
+      type: String,
+      default: "normal",
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -21,12 +34,6 @@ const transactionSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-transactionSchema.virtual("amounts", {
-  ref: "Amount",
-  foreignField: "transactionId",
-  localField: "_id",
-});
 
 transactionSchema.pre(/^find/, function (next) {
   this.select("-__v");

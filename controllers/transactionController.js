@@ -1,11 +1,15 @@
-const Amount = require("../models/AmountModel");
 const Split = require("../models/SplitModel");
 const Transaction = require("../models/TransactionModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 
-exports.AddAmount = catchAsync(async (req, res, next) => {
-  let amount = await Amount.create(req.body);
+exports.addTransaction = catchAsync(async (req, res, next) => {
+  let amount = await Transaction.create({
+    creatorId: req.body._id,
+    amount: req.body.amount,
+    between: [req.body._id, req.body._withId],
+    type: req.body.type,
+  });
 
   res.status(201).json({
     status: "success",
@@ -27,13 +31,9 @@ exports.AddSplit = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getTransaction = catchAsync(async (req, res, next) => {
+exports.getTransactions = catchAsync(async (req, res, next) => {
   const creatorId = req.params.id;
-  let transaction = await Transaction.find({ creator: creatorId }).populate({
-    path: "amounts",
-    select: "type name amount creatorId -transactionId -_id ",
-    // match: queryStr,
-  });
+  let transaction = await Transaction.find({ between: creatorId });
 
   res.status(201).json({
     status: "success",
