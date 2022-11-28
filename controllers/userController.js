@@ -120,11 +120,11 @@ exports.getFriends = catchAsync(async (req, res, next) => {
 
 exports.getFriendSearchResult = catchAsync(async (req, res, next) => {
   // const friendList = await FriendList.findById(req.body.friendsId);
-  // console.log(friendList.friends);
   const searchResult = await User.find({
     // number: { $regex: new RegExp("^" + req.params.keyword) },
     $and: [
       { _id: { $regex: new RegExp("^" + req.params.keyword) } },
+      { _id: { $nin: [req.body._id] } },
       // { _id: { $nin: [req.body.number, ...friendList.friends] } },
     ],
   }).limit(10);

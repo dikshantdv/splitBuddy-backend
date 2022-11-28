@@ -8,7 +8,7 @@ const amountSchema = new mongoose.Schema(
       trim: true,
     },
     transactionId: { type: mongoose.Schema.ObjectId, ref: "Transaction" },
-    creatorId: { type: Number, ref: "User" },
+    creatorId: { type: String, ref: "User" },
     type: {
       type: String,
       default: "normal",

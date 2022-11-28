@@ -3,13 +3,13 @@ const mongoose = require("mongoose");
 const transactionSchema = new mongoose.Schema(
   {
     creator: {
-      type: mongoose.Schema.ObjectId,
+      type: String,
       required: [true, "A Transaction must have creator"],
       ref: "User",
     },
     between: [
       {
-        type: mongoose.Schema.ObjectId,
+        type: String,
         required: [true, "A Transaction must have members"],
         ref: "User",
       },
