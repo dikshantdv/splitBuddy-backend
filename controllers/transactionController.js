@@ -23,7 +23,14 @@ exports.AddSplit = catchAsync(async (req, res, next) => {
     if (req.body.between[i] === req.body.creator) {
       continue;
     }
-    //addAmount wala lag jaega jab frontend se transacId bhi aa jaegi
+    await Transaction.create({
+      creatorId: req.body.creator,
+      amount: req.body.amount,
+      between: [req.body.creator, req.body.between[i]],
+      type: "gave",
+      name: req.body.name,
+      transactionType: "split",
+    });
   }
   res.status(201).json({
     status: "success",
@@ -38,5 +45,14 @@ exports.getTransactions = catchAsync(async (req, res, next) => {
   res.status(201).json({
     status: "success",
     transaction,
+  });
+});
+exports.getSplits = catchAsync(async (req, res, next) => {
+  const creatorId = req.params.id;
+  let split = await Split.find({ between: creatorId });
+
+  res.status(201).json({
+    status: "success",
+    split,
   });
 });

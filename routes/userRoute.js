@@ -16,6 +16,7 @@ router
   .route("/:keyword/getFriendSearchResult")
   .get(userController.getFriendSearchResult);
 router.route("/:id/getTransactions").get(transactionController.getTransactions);
+router.route("/:id/getSplits").get(transactionController.getSplits);
 
 // router.route("/login").post(userController.loginUser);
 // router.route("/getUsers/:id").get(userController.getUsers);
