@@ -63,7 +63,7 @@ exports.getSplits = catchAsync(async (req, res, next) => {
   const creatorId = req.params.id;
   let split = await Split.find(
     { between: creatorId },
-    { createdAt: 0, updatedAt: 0 }
+    { updatedAt: 0 }
   ).populate({
     path: "between creator",
     select: "name DpUrl",
