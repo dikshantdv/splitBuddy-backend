@@ -2,6 +2,19 @@ const catchAsync = require("../utils/catchAsync");
 const User = require("../models/userModel");
 const AppError = require("../utils/appError");
 const FriendList = require("../models/FriendListModel");
+const jwt = require("jsonwebtoken");
+
+const signToken = (_id, friendsId) => {
+  return jwt.sign({ _id, friendsId }, process.env.JWT_SECRET_KEY);
+};
+
+// const createSendToken = (user, statusCode, res) => {
+//   res.status(statusCode).json({
+//     status: "success",
+//     token,
+//     user,
+//   });
+// };
 
 exports.sendOtp = catchAsync(async (req, res, next) => {
   // if (req.body.otp != 1234) {
@@ -35,8 +48,10 @@ exports.verifyOtp = catchAsync(async (req, res, next) => {
   let user = await User.findOne({ _id: req.body._id });
   console.log(user);
   if (user) {
+    const token = signToken(user._id, user.friendsId);
     return res.status(201).json({
       status: "already exists",
+      token,
       user,
     });
   } else {
@@ -52,8 +67,11 @@ exports.createUser = catchAsync(async (req, res, next) => {
     name: req.body.name,
     friendsId: friendList._id,
   });
+  const token = signToken(user._id, user.friendsId);
+
   res.status(201).json({
     status: "success",
+    token,
     user: user,
   });
 });
