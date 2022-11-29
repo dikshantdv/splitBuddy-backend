@@ -4,8 +4,9 @@ const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 
 exports.addTransaction = catchAsync(async (req, res, next) => {
+  const creator = req.user._id;
   let amount = await Transaction.create({
-    creatorId: req.body.creatorId,
+    creatorId: creator,
     amount: req.body.amount,
     between: req.body.between,
     type: req.body.type,
@@ -18,15 +19,16 @@ exports.addTransaction = catchAsync(async (req, res, next) => {
 });
 
 exports.AddSplit = catchAsync(async (req, res, next) => {
-  let split = await Split.create(req.body);
+  const creator = req.user._id;
+  let split = await Split.create({ ...req.body, creator });
   for (let i = 0; i < req.body.between.length; i++) {
-    if (req.body.between[i] === req.body.creator) {
+    if (req.body.between[i] === creator) {
       continue;
     }
     await Transaction.create({
-      creatorId: req.body.creator,
+      creatorId: creator,
       amount: req.body.amount / req.body.between.length,
-      between: [req.body.creator, req.body.between[i]],
+      between: [creator, req.body.between[i]],
       type: "gave",
       name: req.body.name,
       transactionType: "split",
@@ -39,7 +41,7 @@ exports.AddSplit = catchAsync(async (req, res, next) => {
 });
 
 exports.getTransactions = catchAsync(async (req, res, next) => {
-  const creatorId = req.params.id;
+  const creatorId = req.user._id;
   let transaction = await Transaction.find(
     {
       between: creatorId,
@@ -60,7 +62,7 @@ exports.getTransactions = catchAsync(async (req, res, next) => {
   });
 });
 exports.getSplits = catchAsync(async (req, res, next) => {
-  const creatorId = req.params.id;
+  const creatorId = req.user._id;
   let split = await Split.find(
     { between: creatorId },
     { updatedAt: 0 }

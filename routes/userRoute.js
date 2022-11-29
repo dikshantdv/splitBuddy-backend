@@ -3,23 +3,32 @@ const userController = require("../controllers/userController");
 const transactionController = require("../controllers/transactionController");
 const router = express.Router();
 
-// router.route("/VerifyOtp").post(userController.loginUser);
-// router.route("/:carId").get(carController.getOneCar);
 router.route("/verifyOtp").post(userController.verifyOtp);
-router.route("/updateUser").post(userController.updateUser);
 router.route("/createUser").post(userController.createUser);
-router.route("/addFriend").post(userController.AddFriend);
-router.route("/addTransaction").post(transactionController.addTransaction);
-router.route("/addSplit").post(transactionController.AddSplit);
-router.route("/:friendsId/getFriends").get(userController.getFriends);
+router
+  .route("/updateUser")
+  .post(userController.protect, userController.updateUser);
+router
+  .route("/addFriend")
+  .post(userController.protect, userController.AddFriend);
+router
+  .route("/getFriends")
+  .get(userController.protect, userController.getFriends);
+router
+  .route("/addTransaction")
+  .post(userController.protect, transactionController.addTransaction);
+router
+  .route("/addSplit")
+  .post(userController.protect, transactionController.AddSplit);
+router
+  .route("/getTransactions")
+  .get(userController.protect, transactionController.getTransactions);
+router
+  .route("/getSplits")
+  .get(userController.protect, transactionController.getSplits);
+
 router
   .route("/:keyword/getFriendSearchResult")
   .get(userController.getFriendSearchResult);
-router.route("/:id/getTransactions").get(transactionController.getTransactions);
-router.route("/:id/getSplits").get(transactionController.getSplits);
-
-// router.route("/login").post(userController.loginUser);
-// router.route("/getUsers/:id").get(userController.getUsers);
-// router.route("/:id/documents").get(userController.loadDocuments);
 
 module.exports = router;

@@ -3,6 +3,7 @@ const User = require("../models/userModel");
 const AppError = require("../utils/appError");
 const FriendList = require("../models/FriendListModel");
 const jwt = require("jsonwebtoken");
+const { promisify } = require("util");
 
 const signToken = (_id, friendsId) => {
   return jwt.sign({ _id, friendsId }, process.env.JWT_SECRET_KEY);
@@ -77,7 +78,7 @@ exports.createUser = catchAsync(async (req, res, next) => {
 });
 
 exports.updateUser = catchAsync(async (req, res, next) => {
-  let user = await User.findById(req.body._id);
+  let user = await User.findById(req.user._id);
   if (!user) {
     return next(new AppError("No user exsits with such id", 401));
   } else {
@@ -94,7 +95,7 @@ exports.updateUser = catchAsync(async (req, res, next) => {
 
 exports.AddFriend = catchAsync(async (req, res, next) => {
   //find by id and update lagana h $push k sath
-  let friendListMine = await FriendList.findById(req.body.friendsId);
+  let friendListMine = await FriendList.findById(req.user.friendsId);
   let friendListFriend = await FriendList.findById(req.body.friendsIdFriend);
   if (!friendListMine || !friendListFriend) {
     return next(new AppError("No friend list exsits with such id", 401));
@@ -103,16 +104,8 @@ exports.AddFriend = catchAsync(async (req, res, next) => {
       friends: [req.body.oppositeId, ...friendListMine.friends],
     });
     friendListFriend = await friendListFriend.update({
-      friends: [req.body._id, ...friendListFriend.friends],
+      friends: [req.user._id, ...friendListFriend.friends],
     });
-    // let transacObj = {
-    //   creator: req.body._id,
-    //   between: [req.body._id, req.body.friendsId],
-    // }
-    // if(req.body.type==="split"){
-    //   transacObj.type=req.body.type,
-    //   transacObj.name=req.body.name,
-    // }
   }
 
   res.status(201).json({
@@ -121,7 +114,7 @@ exports.AddFriend = catchAsync(async (req, res, next) => {
 });
 
 exports.getFriends = catchAsync(async (req, res, next) => {
-  const friendList = await FriendList.findById(req.params.friendsId).populate({
+  const friendList = await FriendList.findById(req.user.friendsId).populate({
     path: "friends",
     select: "name id _id DpUrl",
   });
@@ -143,4 +136,29 @@ exports.getFriendSearchResult = catchAsync(async (req, res, next) => {
     status: "success",
     searchResult,
   });
+});
+
+exports.protect = catchAsync(async (req, res, next) => {
+  // 1) Getting token and check of it's there
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+
+  if (!token) {
+    return next(
+      new AppError("You are not logged in! Please log in to get access.", 401)
+    );
+  }
+
+  // 2) Verification token
+  const decoded = await promisify(jwt.verify)(
+    token,
+    process.env.JWT_SECRET_KEY
+  );
+  req.user = decoded;
+  next();
 });
