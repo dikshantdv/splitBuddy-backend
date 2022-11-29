@@ -14,7 +14,11 @@ const transactionSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    creatorId: { type: String, ref: "User" },
+    creatorId: {
+      type: String,
+      ref: "User",
+      required: [true, "a transaction must have a creator"],
+    },
     type: {
       type: String,
       enum: ["gave", "got"],
