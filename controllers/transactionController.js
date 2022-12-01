@@ -12,30 +12,27 @@ exports.addTransaction = catchAsync(async (req, res, next) => {
     between: req.body.between,
     type: req.body.type,
   });
-  await Amount.find(
-    {
-      between: req.body.between,
-    },
-    (err, amountList) => {
-      if (amountList.creatorId == creator) {
-        if (req.body.type === "gave") {
-          amountList.amount = amountList.amount + req.body.amount;
-          amountList.save();
-        } else {
-          amountList.amount = amountList.amount - req.body.amount;
-          amountList.save();
-        }
-      } else {
-        if (req.body.type === "gave") {
-          amountList.amount = amountList.amount - req.body.amount;
-          amountList.save();
-        } else {
-          amountList.amount = amountList.amount + req.body.amount;
-          amountList.save();
-        }
-      }
+  const amountList = await Amount.find({
+    between: req.body.between,
+  });
+  if (amountList.creatorId == creator) {
+    if (req.body.type === "gave") {
+      amountList.amount = amountList.amount + req.body.amount;
+      amountList.save();
+    } else {
+      amountList.amount = amountList.amount - req.body.amount;
+      amountList.save();
     }
-  );
+  } else {
+    if (req.body.type === "gave") {
+      amountList.amount = amountList.amount - req.body.amount;
+      amountList.save();
+    } else {
+      amountList.amount = amountList.amount + req.body.amount;
+      amountList.save();
+    }
+  }
+
   res.status(201).json({
     status: "success",
     amount,
