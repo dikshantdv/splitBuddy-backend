@@ -129,14 +129,27 @@ exports.AddFriend = catchAsync(async (req, res, next) => {
 });
 
 exports.getFriends = catchAsync(async (req, res, next) => {
+  const amountList = await Amount.find({
+    between: req.user._id,
+  });
+  console.log(amountList);
   const friendList = await FriendList.findById(req.user.friendsId)
     .populate({
       path: "friends",
       select: "name id _id DpUrl",
     })
     .lean();
-  friendList.friends = await friendList.friends.map(async (friend) => {
+
+  friendList.friends = await friendList.friends.map((friend) => {
     let amount = 0;
+    const amountData = amountList.find((amount) =>
+      amount.between.includes(friend._id)
+    );
+    if (amountData.creatorId == req.user._id) {
+      amount = amountData.amount;
+    } else {
+      amount = -amountData.amount;
+    }
     return { ...friend, amount };
   });
   res.status(201).json({
