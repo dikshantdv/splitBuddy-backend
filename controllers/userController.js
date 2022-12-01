@@ -119,8 +119,8 @@ exports.AddFriend = catchAsync(async (req, res, next) => {
     });
   }
   await Amount.create({
-    creatorId: req.body._id,
-    between: [req.body._id, req.body.oppositeId],
+    creatorId: req.user._id,
+    between: [req.user._id, req.body.oppositeId],
   });
 
   res.status(201).json({
