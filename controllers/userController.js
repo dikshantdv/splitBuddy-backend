@@ -77,6 +77,15 @@ exports.createUser = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getMoneyData = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.user._id, { willGet: 1, willGive: 1 });
+
+  res.status(201).json({
+    status: "success",
+    user,
+  });
+});
+
 exports.updateUser = catchAsync(async (req, res, next) => {
   let user = await User.findById(req.user._id);
   if (!user) {

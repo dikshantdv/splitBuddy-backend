@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const User = require("./userModel");
 
 const transactionSchema = new mongoose.Schema(
   {
@@ -39,11 +40,31 @@ const transactionSchema = new mongoose.Schema(
   }
 );
 
+transactionSchema.statics.calcMinMaxPrice = async function (transacData) {
+  let withId = transacData.between.find((id) => id !== transacData.creatorId);
+  const creator = await User.findById(transacData.creatorId).snapshot();
+  const reciever = await User.findById(withId).snapshot();
+  if (transacData.type === "gave") {
+    creator.willGet = creator.willGet + transacData.amount;
+    creator.save();
+    reciever.willGive = reciever.willGive + transacData.amount;
+    reciever.save();
+  } else {
+    reciever.willGet = reciever.willGet + transacData.amount;
+    reciever.save();
+    creator.willGive = creator.willGive + transacData.amount;
+    creator.save();
+  }
+};
+
 transactionSchema.pre(/^find/, function (next) {
   this.select("-__v");
   next();
 });
 
+transactionSchema.post("save", function () {
+  this.constructor.calcMinMaxPrice(this);
+});
 const Transaction = mongoose.model("Transaction", transactionSchema);
 
 module.exports = Transaction;

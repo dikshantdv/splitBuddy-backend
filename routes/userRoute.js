@@ -9,6 +9,9 @@ router
   .route("/updateUser")
   .post(userController.protect, userController.updateUser);
 router
+  .route("/getMoneyData")
+  .get(userController.protect, userController.getMoneyData);
+router
   .route("/addFriend")
   .post(userController.protect, userController.AddFriend);
 router
