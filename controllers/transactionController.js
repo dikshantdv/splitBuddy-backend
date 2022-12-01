@@ -48,13 +48,15 @@ exports.getTransactions = catchAsync(async (req, res, next) => {
       transactionType: "normal",
     },
     { createdAt: 0, updatedAt: 0 }
-  ).populate({
-    path: "between",
-    match: {
-      _id: { $ne: creatorId },
-    },
-    select: "name DpUrl",
-  });
+  )
+    .populate({
+      path: "between",
+      match: {
+        _id: { $ne: creatorId },
+      },
+      select: "name DpUrl",
+    })
+    .sort({ createdAt: -1 });
 
   res.status(201).json({
     status: "success",
@@ -63,13 +65,12 @@ exports.getTransactions = catchAsync(async (req, res, next) => {
 });
 exports.getSplits = catchAsync(async (req, res, next) => {
   const creatorId = req.user._id;
-  let split = await Split.find(
-    { between: creatorId },
-    { updatedAt: 0 }
-  ).populate({
-    path: "between creator",
-    select: "name DpUrl",
-  });
+  let split = await Split.find({ between: creatorId }, { updatedAt: 0 })
+    .populate({
+      path: "between creator",
+      select: "name DpUrl",
+    })
+    .sort({ createdAt: -1 });
 
   res.status(201).json({
     status: "success",
