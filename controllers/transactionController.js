@@ -17,18 +17,18 @@ exports.addTransaction = catchAsync(async (req, res, next) => {
   }).snapshot();
   if (amountList.creatorId == creator) {
     if (req.body.type === "gave") {
-      amountList.amount = amountList.amount + transacData.amount;
+      amountList.amount = amountList.amount + req.body.amount;
       amountList.save();
     } else {
-      amountList.amount = amountList.amount - transacData.amount;
+      amountList.amount = amountList.amount - req.body.amount;
       amountList.save();
     }
   } else {
     if (req.body.type === "gave") {
-      amountList.amount = amountList.amount - transacData.amount;
+      amountList.amount = amountList.amount - req.body.amount;
       amountList.save();
     } else {
-      amountList.amount = amountList.amount + transacData.amount;
+      amountList.amount = amountList.amount + req.body.amount;
       amountList.save();
     }
   }
