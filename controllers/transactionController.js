@@ -16,7 +16,7 @@ exports.addTransaction = catchAsync(async (req, res, next) => {
     between: req.body.between,
   }).snapshot();
   if (amountList.creatorId == creator) {
-    if (transacData.type === "gave") {
+    if (req.body.type === "gave") {
       amountList.amount = amountList.amount + transacData.amount;
       amountList.save();
     } else {
@@ -24,7 +24,7 @@ exports.addTransaction = catchAsync(async (req, res, next) => {
       amountList.save();
     }
   } else {
-    if (transacData.type === "gave") {
+    if (req.body.type === "gave") {
       amountList.amount = amountList.amount - transacData.amount;
       amountList.save();
     } else {
