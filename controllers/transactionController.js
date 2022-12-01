@@ -14,7 +14,7 @@ exports.addTransaction = catchAsync(async (req, res, next) => {
   });
   const amountList = await Amount.find({
     between: req.body.between,
-  });
+  }).snapshot();
   if (amountList.creatorId == creator) {
     if (req.body.type === "gave") {
       amountList.amount = amountList.amount + req.body.amount;
