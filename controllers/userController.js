@@ -129,31 +129,16 @@ exports.AddFriend = catchAsync(async (req, res, next) => {
 });
 
 exports.getFriends = catchAsync(async (req, res, next) => {
-  const friendList = await FriendList.findById(req.user.friendsId).populate({
-    path: "friends",
-    select: "name id _id DpUrl",
+  const friendList = await FriendList.findById(req.user.friendsId)
+    .populate({
+      path: "friends",
+      select: "name id _id DpUrl",
+    })
+    .lean();
+  friendList.friends = await friendList.friends.map(async (friend) => {
+    let amount = 0;
+    return { ...friend, amount };
   });
-  //     .lean();
-  //   friendList.friends = await friendList.friends.map(async (friend) => {
-  //     const amount = 0;
-  // const stats = await Transaction.aggregate([
-  //       {
-  //         $match: { between: [req.user._id, friend._id] },
-  //       },
-  //       {
-  //         $group: {
-  //           _id: "$between",
-  //           amount: { $sum: "$amount" },
-  //         },
-  //       },
-  //     ]);
-  //     console.log(stats);
-  //     return { ...friend, amount };
-  //   });
-  // customerDB.addresses = customerDB.addresses.map((address) => ({
-  //   ...address,
-  //   addressDesc: mapTypeAddressDescription(address.addressType),
-  // }));
   res.status(201).json({
     status: "success",
     friendList,
