@@ -1,3 +1,4 @@
+const Amount = require("../models/AmountModel");
 const Split = require("../models/SplitModel");
 const Transaction = require("../models/TransactionModel");
 const AppError = require("../utils/appError");
@@ -8,9 +9,29 @@ exports.addTransaction = catchAsync(async (req, res, next) => {
   let amount = await Transaction.create({
     creatorId: creator,
     amount: req.body.amount,
-    between: req.body.between,
+    between: req.bodamounten,
     type: req.body.type,
   });
+  const amountList = await Amount.find({
+    between: req.body.between,
+  }).snapshot();
+  if (amountList.creatorId == creator) {
+    if (transacData.type === "gave") {
+      amountList.amount = amountList.amount + transacData.amount;
+      amountList.save();
+    } else {
+      amountList.amount = amountList.amount - transacData.amount;
+      amountList.save();
+    }
+  } else {
+    if (transacData.type === "gave") {
+      amountList.amount = amountList.amount - transacData.amount;
+      amountList.save();
+    } else {
+      amountList.amount = amountList.amount + transacData.amount;
+      amountList.save();
+    }
+  }
 
   res.status(201).json({
     status: "success",
@@ -33,6 +54,18 @@ exports.AddSplit = catchAsync(async (req, res, next) => {
       name: req.body.name,
       transactionType: "split",
     });
+    const amountList = await Amount.find({
+      between: [creator, req.body.between[i]],
+    }).snapshot();
+    if (amountList.creatorId == creator) {
+      amountList.amount =
+        amountList.amount + req.body.amount / req.body.between.length;
+      amountList.save();
+    } else {
+      amountList.amount =
+        amountList.amount - req.body.amount / req.body.between.length;
+      amountList.save();
+    }
   }
   res.status(201).json({
     status: "success",

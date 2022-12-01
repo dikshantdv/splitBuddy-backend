@@ -4,6 +4,8 @@ const AppError = require("../utils/appError");
 const FriendList = require("../models/FriendListModel");
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
+const Transaction = require("../models/TransactionModel");
+const Amount = require("../models/AmountModel");
 
 const signToken = (_id, friendsId) => {
   return jwt.sign({ _id, friendsId }, process.env.JWT_SECRET_KEY);
@@ -62,7 +64,7 @@ exports.verifyOtp = catchAsync(async (req, res, next) => {
   }
 });
 exports.createUser = catchAsync(async (req, res, next) => {
-  const friendList = await FriendList.create({});
+  const friendList = await FriendList.create({ creator: req.body._id });
   const user = await User.create({
     _id: req.body._id,
     name: req.body.name,
@@ -116,6 +118,10 @@ exports.AddFriend = catchAsync(async (req, res, next) => {
       friends: [req.user._id, ...friendListFriend.friends],
     });
   }
+  await Amount.create({
+    creatorId: req.body._id,
+    between: [req.body._id, req.body.oppositeId],
+  });
 
   res.status(201).json({
     status: "success",
@@ -127,6 +133,27 @@ exports.getFriends = catchAsync(async (req, res, next) => {
     path: "friends",
     select: "name id _id DpUrl",
   });
+  //     .lean();
+  //   friendList.friends = await friendList.friends.map(async (friend) => {
+  //     const amount = 0;
+  // const stats = await Transaction.aggregate([
+  //       {
+  //         $match: { between: [req.user._id, friend._id] },
+  //       },
+  //       {
+  //         $group: {
+  //           _id: "$between",
+  //           amount: { $sum: "$amount" },
+  //         },
+  //       },
+  //     ]);
+  //     console.log(stats);
+  //     return { ...friend, amount };
+  //   });
+  // customerDB.addresses = customerDB.addresses.map((address) => ({
+  //   ...address,
+  //   addressDesc: mapTypeAddressDescription(address.addressType),
+  // }));
   res.status(201).json({
     status: "success",
     friendList,
