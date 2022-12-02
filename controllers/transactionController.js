@@ -73,7 +73,7 @@ exports.AddSplit = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getTransactions = catchAsync(async (req, res, next) => {
+exports.getFriendTransactions = catchAsync(async (req, res, next) => {
   const creatorId = req.user._id;
   const friend = req.params.id;
   let transaction = await Transaction.find(
@@ -97,7 +97,7 @@ exports.getTransactions = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getFriendTransactions = catchAsync(async (req, res, next) => {
+exports.getTransactions = catchAsync(async (req, res, next) => {
   const creatorId = req.user._id;
   let transaction = await Transaction.find(
     {
