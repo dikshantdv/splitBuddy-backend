@@ -11,5 +11,8 @@ app.use(cors());
 app.use(express.json({ limit: "10kb" }));
 
 app.use("/user", userRouter);
+app.get("/", (req, res) => {
+  res.json({ lala: "vdc" });
+});
 
 module.exports = app;

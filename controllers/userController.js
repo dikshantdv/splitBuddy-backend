@@ -132,7 +132,6 @@ exports.getFriends = catchAsync(async (req, res, next) => {
   const amountList = await Amount.find({
     between: req.user._id,
   });
-  console.log(amountList);
   const friendList = await FriendList.findById(req.user.friendsId)
     .populate({
       path: "friends",
@@ -145,6 +144,7 @@ exports.getFriends = catchAsync(async (req, res, next) => {
     const amountData = amountList.find((amount) =>
       amount.between.includes(friend._id)
     );
+    console.log(amountData);
     if (amountData.creatorId == req.user._id) {
       amount = amountData.amount;
     } else {
