@@ -27,6 +27,9 @@ router
   .route("/getTransactions")
   .get(userController.protect, transactionController.getTransactions);
 router
+  .route("/getFriendTransactions/:id")
+  .get(userController.protect, transactionController.getFriendTransactions);
+router
   .route("/getSplits")
   .get(userController.protect, transactionController.getSplits);
 

@@ -75,10 +75,33 @@ exports.AddSplit = catchAsync(async (req, res, next) => {
 
 exports.getTransactions = catchAsync(async (req, res, next) => {
   const creatorId = req.user._id;
+  const friend = req.params.id;
+  let transaction = await Transaction.find(
+    {
+      $all: [{ between: creatorId }, { between: friend }],
+    },
+    { updatedAt: 0 }
+  )
+    .populate({
+      path: "between",
+      match: {
+        _id: { $ne: creatorId },
+      },
+      select: "name DpUrl",
+    })
+    .sort({ createdAt: -1 });
+
+  res.status(201).json({
+    status: "success",
+    transaction,
+  });
+});
+
+exports.getFriendTransactions = catchAsync(async (req, res, next) => {
+  const creatorId = req.user._id;
   let transaction = await Transaction.find(
     {
       between: creatorId,
-      transactionType: "normal",
     },
     { createdAt: 0, updatedAt: 0 }
   )
