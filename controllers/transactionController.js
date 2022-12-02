@@ -78,7 +78,7 @@ exports.getTransactions = catchAsync(async (req, res, next) => {
   const friend = req.params.id;
   let transaction = await Transaction.find(
     {
-      $all: [{ between: creatorId }, { between: friend }],
+      $and: [{ between: creatorId }, { between: friend }],
     },
     { updatedAt: 0 }
   )
