@@ -162,7 +162,12 @@ exports.getFriendSearchResult = catchAsync(async (req, res, next) => {
   const friendList = await FriendList.findById(req.user.friendsId);
   const searchResult = await User.find({
     $and: [
-      { _id: { $regex: new RegExp("^" + req.params.keyword) } },
+      {
+        $or: [
+          { _id: { $regex: new RegExp("^" + req.params.keyword) } },
+          { name: { $regex: new RegExp("^" + req.params.keyword) } },
+        ],
+      },
       { _id: { $nin: [req.user._id, ...friendList.friends] } },
     ],
   }).limit(10);
