@@ -12,7 +12,7 @@ app.use(express.json({ limit: "10kb" }));
 
 app.use("/user", userRouter);
 app.get("/", (req, res) => {
-  res.json({ lala: "vdc" });
+  res.json({ lala: "vdvc" });
 });
 
 module.exports = app;
