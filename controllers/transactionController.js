@@ -13,7 +13,7 @@ exports.addTransaction = catchAsync(async (req, res, next) => {
     type: req.body.type,
   });
   const amountList = await Amount.findOne({
-    $all: [{ between: req.body.between[0] }, { between: req.body.between[1] }],
+    $and: [{ between: req.body.between[0] }, { between: req.body.between[1] }],
   }).snapshot();
   if (amountList.creatorId == creator) {
     if (req.body.type === "gave") {
@@ -55,7 +55,7 @@ exports.AddSplit = catchAsync(async (req, res, next) => {
       transactionType: "split",
     });
     const amountList = await Amount.findOne({
-      between: [creator, req.body.between[i]],
+      $and: [{ between: creator }, { between: req.body.between[i] }],
     }).snapshot();
     if (amountList.creatorId == creator) {
       amountList.amount =
