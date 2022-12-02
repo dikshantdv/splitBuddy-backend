@@ -159,7 +159,7 @@ exports.getFriends = catchAsync(async (req, res, next) => {
 });
 
 exports.getFriendSearchResult = catchAsync(async (req, res, next) => {
-  const friendList = await FriendList.findById(req.headers.friendsid);
+  const friendList = await FriendList.findById(req.user.friendsid);
   const searchResult = await User.find({
     $and: [
       { _id: { $regex: new RegExp("^" + req.params.keyword) } },
