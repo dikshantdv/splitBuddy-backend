@@ -32,6 +32,6 @@ router
 
 router
   .route("/:keyword/getFriendSearchResult")
-  .get(userController.getFriendSearchResult);
+  .get(userController.protect, userController.getFriendSearchResult);
 
 module.exports = router;
