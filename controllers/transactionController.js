@@ -54,7 +54,7 @@ exports.AddSplit = catchAsync(async (req, res, next) => {
       name: req.body.name,
       transactionType: "split",
     });
-    const amountList = await Amount.find({
+    const amountList = await Amount.findOne({
       between: [creator, req.body.between[i]],
     }).snapshot();
     if (amountList.creatorId == creator) {
