@@ -1,10 +1,11 @@
 const express = require("express");
+const { multerUploads } = require("../cloudinary/multerConfig");
 const userController = require("../controllers/userController");
 const transactionController = require("../controllers/transactionController");
 const router = express.Router();
 
 router.route("/verifyOtp").post(userController.verifyOtp);
-router.route("/createUser").post(userController.createUser);
+router.route("/createUser").post(multerUploads, userController.createUser);
 router
   .route("/updateUser")
   .post(userController.protect, userController.updateUser);

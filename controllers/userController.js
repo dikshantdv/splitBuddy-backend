@@ -6,18 +6,12 @@ const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 const Transaction = require("../models/TransactionModel");
 const Amount = require("../models/AmountModel");
+const { dataUri } = require("../cloudinary/multerConfig");
+const { uploader } = require("cloudinary");
 
 const signToken = (_id, friendsId) => {
   return jwt.sign({ _id, friendsId }, process.env.JWT_SECRET_KEY);
 };
-
-// const createSendToken = (user, statusCode, res) => {
-//   res.status(statusCode).json({
-//     status: "success",
-//     token,
-//     user,
-//   });
-// };
 
 exports.sendOtp = catchAsync(async (req, res, next) => {
   // if (req.body.otp != 1234) {
@@ -65,10 +59,14 @@ exports.verifyOtp = catchAsync(async (req, res, next) => {
 });
 exports.createUser = catchAsync(async (req, res, next) => {
   const friendList = await FriendList.create({ creator: req.body._id });
+  const file = dataUri(req).content;
+  const image = await uploader.upload(file);
+
   const user = await User.create({
     _id: req.body._id,
     name: req.body.name,
     friendsId: friendList._id,
+    DpUrl: image.url,
   });
   const token = signToken(user._id, user.friendsId);
 
