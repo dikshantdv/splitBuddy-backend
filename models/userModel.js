@@ -19,7 +19,6 @@ const userSchema = new mongoose.Schema(
     },
     DpId: {
       type: String,
-      required: true,
     },
   },
   {
