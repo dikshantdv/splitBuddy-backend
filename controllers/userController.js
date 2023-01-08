@@ -99,7 +99,7 @@ exports.updateUser = catchAsync(async (req, res, next) => {
     const image = await uploader.upload(file);
     data["DpUrl"] = image.url;
   }
-  const user = await User.findByIdAndUpdate(req.user._id, { new: true }, data);
+  const user = await User.findByIdAndUpdate(req.user._id, data, { new: true });
 
   res.status(201).json({
     status: "success",
