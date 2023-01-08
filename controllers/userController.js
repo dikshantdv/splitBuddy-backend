@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 const Transaction = require("../models/TransactionModel");
 const Amount = require("../models/AmountModel");
-const { dataUri } = require("../cloudinary/multerConfig");
+const { dataUri, multerUploads } = require("../cloudinary/multerConfig");
 const { uploader } = require("cloudinary");
 
 const signToken = (_id, friendsId) => {
@@ -59,15 +59,18 @@ exports.verifyOtp = catchAsync(async (req, res, next) => {
 });
 exports.createUser = catchAsync(async (req, res, next) => {
   const friendList = await FriendList.create({ creator: req.body._id });
-  const file = dataUri(req).content;
-  const image = await uploader.upload(file);
-
-  const user = await User.create({
+  let data = {
     _id: req.body._id,
     name: req.body.name,
     friendsId: friendList._id,
-    DpUrl: image.url,
-  });
+  };
+  if (req.file) {
+    const file = dataUri(req).content;
+    const image = await uploader.upload(file);
+    data["DpUrl"] = image.url;
+  }
+
+  const user = await User.create(data);
   const token = signToken(user._id, user.friendsId);
 
   res.status(201).json({
@@ -87,14 +90,16 @@ exports.getMoneyData = catchAsync(async (req, res, next) => {
 });
 
 exports.updateUser = catchAsync(async (req, res, next) => {
-  let user = await User.findById(req.user._id);
-  if (!user) {
-    return next(new AppError("No user exsits with such id", 401));
-  } else {
-    user = await user.update({
-      name: req.body.name,
-    });
+  let data = {
+    name: req.body.name,
+  };
+  if (req.file) {
+    console.log("vd");
+    const file = dataUri(req).content;
+    const image = await uploader.upload(file);
+    data["DpUrl"] = image.url;
   }
+  const user = await User.findByIdAndUpdate(req.user._id, { new: true }, data);
 
   res.status(201).json({
     status: "success",

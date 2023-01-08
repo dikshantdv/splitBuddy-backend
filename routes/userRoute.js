@@ -8,7 +8,7 @@ router.route("/verifyOtp").post(userController.verifyOtp);
 router.route("/createUser").post(multerUploads, userController.createUser);
 router
   .route("/updateUser")
-  .post(userController.protect, userController.updateUser);
+  .post(userController.protect, multerUploads, userController.updateUser);
 router
   .route("/getMoneyData")
   .get(userController.protect, userController.getMoneyData);
