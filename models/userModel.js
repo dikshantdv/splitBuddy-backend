@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema(
       default:
         "https://api.time.com/wp-content/uploads/2019/08/better-smartphone-photos.jpg",
     },
+    DpId: {
+      type: String,
+      required: true,
+    },
   },
   {
     toJSON: { virtuals: true },

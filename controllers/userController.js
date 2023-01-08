@@ -67,7 +67,9 @@ exports.createUser = catchAsync(async (req, res, next) => {
   if (req.file) {
     const file = dataUri(req).content;
     const image = await uploader.upload(file);
+    console.log(image);
     data["DpUrl"] = image.url;
+    data["DpId"] = image.public_id;
   }
 
   const user = await User.create(data);
@@ -94,10 +96,12 @@ exports.updateUser = catchAsync(async (req, res, next) => {
     name: req.body.name,
   };
   if (req.file) {
-    console.log("vd");
+    const userOld = await User.findById(req.user._id);
     const file = dataUri(req).content;
+    uploader.destroy(userOld.DpId);
     const image = await uploader.upload(file);
     data["DpUrl"] = image.url;
+    data["DpId"] = image.public_id;
   }
   const user = await User.findByIdAndUpdate(req.user._id, data, { new: true });
 
